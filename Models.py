@@ -53,20 +53,20 @@ class Truck:
         self.purchase_cost = purchase_cost
         self.prev_owner = prev_owner
         self.description = description
+        self.current_owner = ""
         self.sale_info = []
         self.status = self.NEW_TRUCK
 
-    def add_sale(self, new_owner, sale_price, amount_paid):
-        self.sale_info.append(BuyerInfo(new_owner, sale_price, amount_paid))
+    def add_sale(self, new_owner, sale_price):
+        self.sale_info.append(BuyerInfo(new_owner, sale_price))
         self.refresh_truck_status()
 
-    def add_payment_with_buyer(self, buyer, payment, input_date):
+    def add_payment_with_buyer(self, buyer, payment, input_date, description):
         for sale in self.sale_info:
             if sale.new_owner == buyer:
-                sale.add_payment(int(input_date.GetYear()),
-                                 int(input_date.GetMonth()),
-                                 int(input_date.GetDay()),
-                                 payment)
+                sale.add_payment(input_date,
+                                 payment,
+                                 description)
                 sale.refresh_values()
 
         self.refresh_truck_status()
@@ -77,37 +77,36 @@ class Truck:
                 buyer.payments.remove(payment)
 
     def refresh_truck_status(self):
-        if self.sale_info == []:
+        if not self.sale_info:
             self.status = self.NEW_TRUCK
         else:
             buyer = self.sale_info[-1]
+            self.current_owner = str(buyer.new_owner)
             buyer.refresh_values()
-            print(buyer.amount_remaining)
+
             if buyer.amount_remaining <= 0:
                 self.status = self.COMPLETED
             else:
                 self.status = self.IN_PROGRESS
 
 
-
 class BuyerInfo:
-    def __init__(self, new_owner, sale_price, down_payment=0):
+    def __init__(self, new_owner, sale_price):
         self.new_owner = new_owner
         self.sale_price = float(sale_price)
-        self.down_payment = float(down_payment)
-        self.amount_paid = self.down_payment
+        self.amount_paid = 0
         self.amount_remaining = self.sale_price - self.amount_paid
         self.payments = []
 
-    def add_payment(self, year, month, day, payment_amount):
-        self.payments.append(Payment(year, month, day, payment_amount, self.new_owner))
+    def add_payment(self, input_date, payment_amount, description):
+        self.payments.append(Payment(input_date, payment_amount, self.new_owner, description))
         self.amount_paid += float(payment_amount)
 
     def get_amount_paid(self):
         return self.amount_paid
 
     def calculate_amount_paid(self):
-        self.amount_paid = self.down_payment
+        self.amount_paid = 0
         for payment in self.payments:
             self.amount_paid += payment.payment_amount
 
@@ -117,10 +116,12 @@ class BuyerInfo:
 
 
 class Payment:
-    def __init__(self, year, month, day, payment_amount, buyer):
-        self.date = date(year, month, day)
+    def __init__(self, input_date, payment_amount, buyer, description=""):
+        print(input_date)
+        self.date = date(input_date.GetYear(), input_date.GetMonth() + 1, input_date.GetDay())
         self.payment_amount = float(payment_amount)
         self.buyer = buyer
+        self.description = description
 
     def __str__(self):
         return "Payment of ${} made on {}".format(str(self.payment_amount), self.date.strftime("%B %d, %Y"))

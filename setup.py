@@ -10,6 +10,6 @@ if sys.platform == "win32":
     base = "Win32GUI"
 
 setup(  name = "Payment Tracker",
-        version = "0.1",
+        version = "0.1.1",
         description = "My Payment Tracker application!",
         executables = [Executable("PaymentTracker.py", base=base)])

@@ -9,7 +9,7 @@ import os
 class PaymentTracker(wx.Frame):
 
     def __init__(self):
-        wx.Frame.__init__(self, None, wx.ID_ANY, title='PaymentTracker', size=(1050, 800))
+        wx.Frame.__init__(self, None, wx.ID_ANY, title='PaymentTracker', size=(1000, 700))
 
         self.truck_list = self.load_truck_list()
         self.selected_truck = None
@@ -69,7 +69,7 @@ class PaymentTracker(wx.Frame):
                 if self.buyer_form.verify_values():
 
                     values = self.buyer_form.get_values()
-                    self.selected_truck.add_sale(values[0], values[1], values[2])
+                    self.selected_truck.add_sale(values[0], values[1])
                     self.save_truck_list()
                     self.buyer_form.clear_values()
 
@@ -85,7 +85,7 @@ class PaymentTracker(wx.Frame):
 
                 if self.payment_form.verify_values():
 
-                    self.selected_truck.add_payment_with_buyer(values[0], values[1], values[2])
+                    self.selected_truck.add_payment_with_buyer(values[0], values[1], values[2], values[3])
                     self.truck_detail_view.set_buyers(self.selected_truck.sale_info)
                     self.save_truck_list()
                     self.payment_form.clear_values()

@@ -7,7 +7,6 @@ class SaveForm(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent=parent)
 
-
         self.save_button = wx.Button(self, wx.ID_ANY, 'Update', style=wx.BU_EXACTFIT)
         self.save_button.SetBackgroundColour(wx.Colour(55, 186, 0))
         sizer = wx.BoxSizer(wx.VERTICAL)
@@ -43,37 +42,44 @@ class NewTruckForm(wx.Panel):
 
         top_sizer = wx.BoxSizer(wx.VERTICAL)
         title_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        input_label_sizer = wx.BoxSizer(wx.VERTICAL)
-        input_text_sizer = wx.BoxSizer(wx.VERTICAL)
-        input_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        vin_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        year_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        prev_owner_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        cost_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        description_sizer = wx.BoxSizer(wx.HORIZONTAL)
+
         btn_sizer = wx.BoxSizer(wx.HORIZONTAL)
 
         title_sizer.Add(title, 0, wx.ALL, 4)
-        input_label_sizer.Add(label_one, 0, wx.ALL, 4)
-        input_label_sizer.Add(label_two, 0, wx.ALL, 4)
-        input_label_sizer.Add(label_three, 0, wx.ALL, 4)
-        input_label_sizer.Add(label_four, 0, wx.ALL, 4)
-        input_label_sizer.Add(label_five, 0, wx.ALL, 4)
 
-        input_text_sizer.Add(self.vin, 1, wx.ALL | wx.EXPAND, 4)
-        input_text_sizer.Add(self.year, 1, wx.ALL | wx.EXPAND, 4)
-        input_text_sizer.Add(self.prev_owner, 1, wx.ALL | wx.EXPAND, 4)
-        input_text_sizer.Add(self.purchase_cost, 1, wx.ALL | wx.EXPAND, 4)
-        input_text_sizer.Add(self.description, 1, wx.ALL | wx.EXPAND, 4)
-        input_sizer.Add(input_label_sizer, 1, wx.CENTER, 4)
-        input_sizer.Add(input_text_sizer, 1, wx.ALL | wx.EXPAND, 4)
+        vin_sizer.Add(label_one, 1, wx.ALL, 4)
+        vin_sizer.Add(self.vin, 1, wx.ALL | wx.EXPAND, 4)
+
+        year_sizer.Add(label_two, 1, wx.ALL, 4)
+        year_sizer.Add(self.year, 1, wx.ALL | wx.EXPAND, 4)
+
+        prev_owner_sizer.Add(label_three, 1, wx.ALL, 4)
+        prev_owner_sizer.Add(self.prev_owner, 1, wx.ALL | wx.EXPAND, 4)
+
+        cost_sizer.Add(label_four, 1, wx.ALL, 4)
+        cost_sizer.Add(self.purchase_cost, 1, wx.ALL | wx.EXPAND, 4)
+
+        description_sizer.Add(label_five, 1, wx.ALL, 4)
+        description_sizer.Add(self.description, 1, wx.ALL | wx.EXPAND, 4)
 
         btn_sizer.Add(ok_btn, 0, wx.ALL, 4)
 
         top_sizer.Add(title_sizer, 0, wx.CENTER)
         top_sizer.Add(wx.StaticLine(self,), 0, wx.ALL | wx.EXPAND, 4)
-        top_sizer.Add(input_sizer, 0, wx.ALL | wx.EXPAND, 4)
+        top_sizer.Add(vin_sizer, 1, wx.CENTER, 4)
+        top_sizer.Add(year_sizer, 1, wx.CENTER, 4)
+        top_sizer.Add(prev_owner_sizer, 1, wx.CENTER, 4)
+        top_sizer.Add(cost_sizer, 1, wx.CENTER, 4)
+        top_sizer.Add(description_sizer, 1, wx.CENTER, 4)
         top_sizer.Add(wx.StaticLine(self), 0, wx.ALL | wx.EXPAND, 4)
         top_sizer.Add(btn_sizer, 0, wx.ALL | wx.CENTER, 4)
 
         self.SetSizer(top_sizer)
-
-
 
     def get_values(self):
         return [self.vin.GetValue(),
@@ -104,42 +110,51 @@ class NewPaymentForm(wx.Panel):
 
         title = wx.StaticText(self, wx.ID_ANY, 'New Payment')
 
-
         label_buyer = wx.StaticText(self, wx.ID_ANY, 'Buyer')
         self.buyer = wx.ComboBox(self, wx.ID_ANY)
 
         label_one = wx.StaticText(self, wx.ID_ANY, 'Payment Amount')
         self.payment = wx.TextCtrl(self, wx.ID_ANY, '')
 
-        label_two = wx.StaticText(self, wx.ID_ANY, 'Date')
+        label_two = wx.StaticText(self, wx.ID_ANY, 'Date ')
         self.date = wx.adv.DatePickerCtrl(self, wx.ID_ANY)
+
+        label_three = wx.StaticText(self, wx.ID_ANY, "Description")
+        self.description = wx.TextCtrl(self, wx.ID_ANY, '')
 
         ok_btn = wx.Button(self, wx.ID_ANY, 'Add Payment')
 
         top_sizer = wx.BoxSizer(wx.VERTICAL)
         title_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        input_label_sizer = wx.BoxSizer(wx.VERTICAL)
-        input_text_sizer = wx.BoxSizer(wx.VERTICAL)
-        input_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        buyer_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        payment_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        date_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        description_sizer = wx.BoxSizer(wx.HORIZONTAL)
         btn_sizer = wx.BoxSizer(wx.HORIZONTAL)
 
         title_sizer.Add(title, 0, wx.ALL, 4)
-        input_label_sizer.Add(label_buyer, 0, wx.ALL, 4)
-        input_label_sizer.Add(label_one, 0, wx.ALL, 4)
-        input_label_sizer.Add(label_two, 0, wx.ALL, 4)
 
-        input_text_sizer.Add(self.buyer, 1, wx.ALL |wx.EXPAND , 4)
-        input_text_sizer.Add(self.payment, 1, wx.ALL | wx.EXPAND, 4)
-        input_text_sizer.Add(self.date, 1, wx.ALL | wx.EXPAND, 4)
+        buyer_sizer.Add(label_buyer, 1, wx.ALL, 4)
+        buyer_sizer.Add(self.buyer, 1, wx.ALL | wx.EXPAND, 4)
 
-        input_sizer.Add(input_label_sizer, 1, wx.CENTER, 4)
-        input_sizer.Add(input_text_sizer, 1, wx.ALL | wx.EXPAND, 4)
+        payment_sizer.Add(label_one, 1, wx.ALL, 4)
+        payment_sizer.Add(self.payment, 1, wx.ALL | wx.EXPAND, 4)
+
+        description_sizer.Add(label_three, 1, wx.ALL, 4)
+        description_sizer.Add(self.description, 1, wx.ALL | wx.EXPAND, 4)
+
+        date_sizer.Add(label_two, 3, wx.ALL, 4)
+        date_sizer.Add(self.date, 2, wx.ALL, 4)
+
 
         btn_sizer.Add(ok_btn, 0, wx.ALL, 4)
 
         top_sizer.Add(title_sizer, 0, wx.CENTER)
         top_sizer.Add(wx.StaticLine(self), 0, wx.ALL | wx.EXPAND, 4)
-        top_sizer.Add(input_sizer, 0, wx.ALL | wx.EXPAND, 4)
+        top_sizer.Add(buyer_sizer, 1, wx.CENTER, 4)
+        top_sizer.Add(payment_sizer, 1, wx.CENTER, 4)
+        top_sizer.Add(description_sizer, 1, wx.CENTER, 4)
+        top_sizer.Add(date_sizer, 1, wx.CENTER, 4)
         top_sizer.Add(wx.StaticLine(self), 0, wx.ALL | wx.EXPAND, 4)
         top_sizer.Add(btn_sizer, 0, wx.ALL | wx.CENTER, 4)
 
@@ -149,10 +164,12 @@ class NewPaymentForm(wx.Panel):
     def get_values(self):
         return [self.buyer.GetValue(),
                 self.payment.GetValue(),
-                self.date.GetValue()]
+                self.date.GetValue(),
+                self.description.GetValue()]
 
     def clear_values(self):
         self.payment.Clear()
+        self.description.Clear()
 
     def set_buyer_list(self, buyer_list):
         self.buyer.Clear()
@@ -180,9 +197,6 @@ class NewBuyerForm(wx.Panel):
         label_two = wx.StaticText(self, wx.ID_ANY, 'Sale Price')
         self.sale_price = wx.TextCtrl(self, wx.ID_ANY, '')
 
-        label_three = wx.StaticText(self, wx.ID_ANY, 'Down Payment')
-        self.down_payment = wx.TextCtrl(self, wx.ID_ANY, '')
-
         ok_btn = wx.Button(self, wx.ID_ANY, 'Add Buyer')
 
         top_sizer = wx.BoxSizer(wx.VERTICAL)
@@ -195,11 +209,9 @@ class NewBuyerForm(wx.Panel):
         title_sizer.Add(title, 0, wx.ALL, 4)
         input_label_sizer.Add(label_one, 0, wx.ALL, 4)
         input_label_sizer.Add(label_two, 0, wx.ALL, 4)
-        input_label_sizer.Add(label_three, 0, wx.ALL, 4)
 
         input_text_sizer.Add(self.buyer, 1, wx.ALL | wx.EXPAND, 4)
         input_text_sizer.Add(self.sale_price, 1, wx.ALL | wx.EXPAND, 4)
-        input_text_sizer.Add(self.down_payment, 1, wx.ALL | wx.EXPAND, 4)
 
         input_sizer.Add(input_label_sizer, 1, wx.CENTER, 4)
         input_sizer.Add(input_text_sizer, 1, wx.ALL | wx.EXPAND, 4)
@@ -214,23 +226,21 @@ class NewBuyerForm(wx.Panel):
 
         self.SetSizer(top_sizer)
 
-
     def verify_values(self):
-        if check_if_number(self.down_payment.GetValue()):
-            if check_if_number(self.sale_price.GetValue()):
 
-                return True
+        if check_if_number(self.sale_price.GetValue()):
+
+            return True
         return False
 
     def get_values(self):
         return [self.buyer.GetValue(),
-                self.sale_price.GetValue(),
-                self.down_payment.GetValue()]
+                self.sale_price.GetValue()]
 
     def clear_values(self):
         self.buyer.Clear()
         self.sale_price.Clear()
-        self.down_payment.Clear()
+
 
 
 def check_if_number(value):

@@ -16,11 +16,12 @@ class TruckListView(wx.Panel):
         self.progress = self.dataOlv.AddImages(wx.Icon(progress))
 
         self.dataOlv.SetColumns([
-            ColumnDefn("VIN", "left", 180, "vin_number", imageGetter=self.image_getter),
-            ColumnDefn("Year", "left", 100, "year"),
-            ColumnDefn("Description", "right", 150, "description"),
-            ColumnDefn("Previous Owner", "left", 150, "prev_owner"),
-            ColumnDefn("Purchase Cost", "left", 150, "purchase_cost", stringConverter=numbers_with_commas)
+            ColumnDefn("Buyer", "left", 150, "current_owner", imageGetter=self.image_getter),
+            ColumnDefn("VIN", "left", 150, "vin_number"),
+            ColumnDefn("Year", "left", 65, "year"),
+            ColumnDefn("Description", "left", 130, "description"),
+            ColumnDefn("Previous Owner", "left", 100, "prev_owner"),
+            ColumnDefn("Purchase Cost", "left", 100, "purchase_cost", stringConverter=numbers_with_commas)
         ])
 
         self.dataOlv.rowFormatter = row_formatter
@@ -28,7 +29,7 @@ class TruckListView(wx.Panel):
         self.dataOlv.cellEditMode = ObjectListView.CELLEDIT_SINGLECLICK
 
         sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(self.dataOlv, 1,wx.ALL | wx.EXPAND, 5)
+        sizer.Add(self.dataOlv, 1, wx.ALL | wx.EXPAND, 5)
         self.SetSizer(sizer)
 
     def set_trucks(self, truck_list):
@@ -81,7 +82,6 @@ class TruckDetailView(wx.Panel):
             ColumnDefn("Buyer", "left", 150, "new_owner"),
             ColumnDefn("Sale Price", "left", 140, "sale_price", stringConverter=numbers_with_commas),
             ColumnDefn("Amount Remaining", "left", 160, "amount_remaining", stringConverter=numbers_with_commas),
-            ColumnDefn("Down Payment", "left", 140, "down_payment", stringConverter=numbers_with_commas),
             ColumnDefn("Amount Received", "left", 160, "amount_paid", stringConverter=numbers_with_commas),
         ])
 
@@ -91,14 +91,15 @@ class TruckDetailView(wx.Panel):
 
         self.paymentsOlv.SetColumns([
             ColumnDefn("Buyer", "left", 200, "buyer"),
-            ColumnDefn("Date", "left", 235, "date", stringConverter=date_str),
-            ColumnDefn("Payment Amount", "left", 235, "payment_amount", stringConverter=numbers_with_commas)
+            ColumnDefn("Date", "left", 150, "date", stringConverter=date_str),
+            ColumnDefn("Payment Amount", "left", 150, "payment_amount", stringConverter=numbers_with_commas),
+            ColumnDefn("Description", "left", 200, "description")
         ])
 
         self.paymentsOlv.cellEditMode = ObjectListView.CELLEDIT_SINGLECLICK
 
         sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(selected_truck_sizer,0, wx.ALL | wx.EXPAND, 5 )
+        sizer.Add(selected_truck_sizer, 0, wx.ALL | wx.EXPAND, 5)
         sizer.Add(self.buyerOlv, 1, wx.ALL | wx.EXPAND, 5)
         sizer.Add(self.paymentsOlv, 2, wx.ALL | wx.EXPAND, 5)
         self.SetSizer(sizer)
