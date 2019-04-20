@@ -40,6 +40,7 @@ class Truck:
     RENTED = "rented"
     FINANCED = "finance"
     COMPLETED = "completed"
+    LATE = "late"
 
     def __init__(self, vin, year, make, purchase_cost, prev_owner, description):
         """
@@ -78,12 +79,18 @@ class Truck:
         else:
             if self.current_buyer.sale_type == self.RENTED:
                 self.status = self.RENTED
+                if self.current_buyer.is_late():
+                    self.status = self.LATE
             if self.current_buyer.sale_type == self.FINANCED:
                 if self.current_buyer.amount_remaining <= 0:
                     self.status = self.COMPLETED
                 else:
                     self.status = self.FINANCED
-    
+
+                if self.current_buyer.is_late():
+                    self.status = self.LATE
+
+
     def buyback(self):
         self.current_buyer = None
         
@@ -202,9 +209,23 @@ class Buyer:
 
         return latest_payment
 
+    def is_late(self):
+
+
+        if self.payment_list:
+            for payment in self.payment_list:
+                if not payment.is_confirmed:
+
+                    if payment.is_due():
+                        return True
+                    else:
+                        return False
+        return False
+
+
     def refresh_values(self):
         self.calculate_amount_paid()
-        self.next_payment_date = self.get_latest_payment_made()
+        self.next_payment_date = self.move_date_one_month(self.get_latest_payment_made())
 
     def calculate_amount_paid(self):
         self.amount_paid = 0
@@ -241,12 +262,13 @@ class Payment:
 
     def is_late(self):
         if self.payment_date > self.due_date:
+
             return True
         return False
 
     def is_due(self):
         if not self.is_confirmed:
-            if date().today() > self.due_date:
+            if date.today() > self.due_date:
                 return True
 
         return False

@@ -2,7 +2,7 @@ import wx
 from ObjectListView import ObjectListView as Olv, ColumnDefn
 from Models import Truck
 from Forms import NewTruckForm
-
+from datetime import date, datetime
 
 class TruckListView(wx.Panel):
     """
@@ -62,7 +62,9 @@ def truck_row_formatter(list_item, truck):
             list_item.SetBackgroundColour(wx.RED)
         else:
             list_item.SetBackgroundColour(wx.Colour(165, 224, 240))
-    else:
+    elif truck.status == truck.LATE:
+        list_item.SetBackgroundColour(wx.RED)
+    else :
         list_item.SetBackgroundColour(wx.WHITE)
 
 
@@ -173,8 +175,11 @@ class TruckDetailView(wx.Panel):
 
         self.paymentsOlv = Olv(self, wx.ID_ANY, style=wx.LC_REPORT)
 
+        late_icon = wx.Bitmap("data/Late.png", wx.BITMAP_TYPE_ANY)
+        self.late_icon = self.paymentsOlv.AddImages(wx.Icon(late_icon))
+
         self.paymentsOlv.SetColumns([
-            ColumnDefn("Date", "left", 120, "due_date", stringConverter=date_str),
+            ColumnDefn("Date", "left", 120, "due_date", stringConverter=date_str, imageGetter=self.image_getter),
             ColumnDefn("Description", "left", 200, "description"),
             ColumnDefn("Balance", "left", 120, "balance_before", stringConverter=numbers_with_commas),
             ColumnDefn("Payment", "left", 120, "payment_amount", stringConverter=numbers_with_commas),
@@ -198,16 +203,18 @@ class TruckDetailView(wx.Panel):
         if truck.current_buyer is not None:
             self.selected_truck_buyer.SetValue(truck.current_buyer.name)
 
-            self.selected_truck_sale_price.SetValue(str(truck.current_buyer.sale_price))
-            self.selected_truck_tax.SetValue(str(truck.current_buyer.tax))
-            self.selected_truck_interest.SetValue(str(truck.current_buyer.interest))
-            self.selected_truck_total_price.SetValue(str(truck.current_buyer.get_total_price()))
+            self.selected_truck_sale_price.SetValue(numbers_with_commas(truck.current_buyer.sale_price))
+            self.selected_truck_tax.SetValue(numbers_with_commas(truck.current_buyer.tax))
+            self.selected_truck_interest.SetValue(numbers_with_commas(truck.current_buyer.interest))
+            self.selected_truck_total_price.SetValue(numbers_with_commas(truck.current_buyer.get_total_price()))
 
-            self.selected_truck_down_payment.SetValue(str(truck.current_buyer.down_payment))
-            self.selected_truck_amount_remaining.SetValue(str(truck.current_buyer.amount_remaining))
+            self.selected_truck_down_payment.SetValue(numbers_with_commas(truck.current_buyer.down_payment))
+            self.selected_truck_amount_remaining.SetValue(numbers_with_commas(truck.current_buyer.amount_remaining))
             self.selected_truck_payments.SetValue(str(truck.current_buyer.get_payments_made()))
-            self.selected_truck_next_payment.SetValue(str(truck.current_buyer.next_payment_date))
+            self.selected_truck_next_payment.SetValue(str(date_str(truck.current_buyer.next_payment_date)))
             self.paymentsOlv.SetObjects(truck.current_buyer.payment_list)
+        if truck.current_buyer is None:
+            self.paymentsOlv.SetObjects([])
 
     def clear_truck(self):
         self.selected_truck = None
@@ -227,7 +234,10 @@ class TruckDetailView(wx.Panel):
         self.selected_truck_next_payment.Clear()
 
     def confirm_payment(self, payment, value):
+
         payment.is_confirmed = value
+        if payment.is_confirmed:
+            payment.payment_date = date.today()
         buyer = self.selected_truck.current_buyer
         if buyer.sale_type == Truck.RENTED:
             if value is True and payment.due_date == buyer.next_payment_date:
@@ -235,6 +245,10 @@ class TruckDetailView(wx.Panel):
         elif buyer.sale_type == Truck.FINANCED:
             pass
         buyer.refresh_values()
+
+    def image_getter(self, payment):
+        if payment.is_late():
+            return self.late_icon
 
 
 def confirm_status(input_str):
@@ -246,7 +260,7 @@ def confirm_status(input_str):
 
 def date_str(input_date):
     if input_date:
-        return input_date.strftime("%B %d, %Y")
+        return input_date.strftime("%b %d, %Y")
     else:
         return ''
 

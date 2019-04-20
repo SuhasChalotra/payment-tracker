@@ -169,42 +169,10 @@ class PaymentTracker(wx.Frame):
         self.refresh_truck_list()
 
     def print_payment(self):
+        printer = ObjectListView.ListCtrlPrinter(self.truck_detail_view.paymentsOlv, "My Report Title")
+       # printer.ReportFormat.Row.Line(side=wx.BOTTOM, color=wx.BLACK, width=1)
+        printer.PrintPreview()
 
-        def payment_list_maker(payment_list):
-            """
-            This function will take the list of Payment Objects and return a dict with lists as values.The lists
-            can be  directly feed into the plotly Table as data
-
-            Example- {'payment_date':[the payments dates of all the Payment Objects], '':[], ...}"
-
-            :param payment_list: PaymentObject from Models
-            :return:
-            """
-
-            return {'Date': [payment.due_date for payment in payment_list],
-                    'Description': [payment.description for payment in payment_list],
-                    'Balance': [payment.balance_before for payment in payment_list],
-                    'Payment': [payment.payment_amount for payment in payment_list],
-                    'New Balance': [payment.new_balance for payment in payment_list],
-                    'Confirmation': [payment.is_confirmed for payment in payment_list]}
-
-        def rent_table(input_data):
-            values = ['Date', 'Description', 'Payment', 'Confirmation']
-            return #Table
-        def finance_table(input_data):
-            values = ['Date', 'Description', 'Balance', 'Payment', 'New Balance', 'Confirmation']
-            return#Table
-
-        buyer = self.selected_truck.current_buyer
-        data = payment_list_maker(buyer.payment_list)
-
-        if buyer.sale_type == Truck.RENTED:
-            table = rent_table(data)
-        elif buyer.sale_type == Truck.FINANCED:
-            table = finance_table(data)
-        else:
-            pass
-        py.iplot([table])
 
 
 
@@ -218,6 +186,7 @@ class PaymentTracker(wx.Frame):
         self.selected_truck = self.truck_list_view.get_selected()
         self.truck_detail_view.clear_truck()
         self.truck_list.refresh_trucks()
+        self.save_truck_list()
 
         if self.selected_truck:
 
